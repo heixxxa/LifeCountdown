@@ -79,6 +79,11 @@ public sealed class SettingsService
             normalized.TrayIconMetric = TrayIconMetricMode.Week;
         }
 
+        if (!Enum.IsDefined(normalized.TaskbarMetric) || normalized.TaskbarMetric == TrayIconMetricMode.DefaultIcon)
+        {
+            normalized.TaskbarMetric = TrayIconMetricMode.Week;
+        }
+
         if (string.IsNullOrWhiteSpace(normalized.CustomCountdownTitle))
         {
             normalized.CustomCountdownTitle = "自定义倒计时";

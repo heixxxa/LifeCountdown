@@ -34,8 +34,12 @@ public partial class MainWindow : Window
         };
         _refreshTimer.Tick += RefreshTimer_Tick;
 
+        _viewModel.Refresh(DateTime.Now);
+
         Loaded += MainWindow_Loaded;
     }
+
+    public bool IsWidgetOpen => IsVisible;
 
     public void ShowWidget()
     {
@@ -47,6 +51,11 @@ public partial class MainWindow : Window
         WindowState = WindowState.Normal;
         PositionWindow();
         Activate();
+    }
+
+    public void DismissWidget()
+    {
+        Hide();
     }
 
     public void OpenSettingsDialog()
@@ -63,7 +72,7 @@ public partial class MainWindow : Window
 
         _settings = dialog.Result.Clone();
         _settingsService.Save(_settings);
-        _viewModel.UpdateSettings(_settings);
+        ApplySettings(_settings);
         SettingsSaved?.Invoke(this, _settings.Clone());
         PositionWindow();
     }
@@ -102,6 +111,13 @@ public partial class MainWindow : Window
         Top = _settings.WindowAnchor == WindowAnchor.TopRight
             ? workArea.Top + 20
             : workArea.Bottom - height - 20;
+    }
+
+    private void ApplySettings(AppSettings settings)
+    {
+        _settings = settings.Clone();
+        _viewModel.UpdateSettings(_settings);
+        _viewModel.Refresh(DateTime.Now);
     }
 
     protected override void OnClosed(EventArgs e)

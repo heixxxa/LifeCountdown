@@ -28,8 +28,7 @@ public static class TrayIconRenderer
 
     public static string BuildTrayText(MetricSnapshot metric)
     {
-        var text = $"{metric.Title} {metric.Percentage:0.0}%";
-        return text.Length <= 63 ? text : text[..63];
+        return MetricTextFormatter.BuildTrayText(metric);
     }
 
     private static void DrawRingIcon(Drawing.Graphics graphics, int iconWidth, int iconHeight, double percentage, TrayIconMetricMode mode)

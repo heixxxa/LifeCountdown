@@ -60,6 +60,16 @@ public partial class SettingsWindow : Window
             new SelectionItem<TrayIconMetricMode>("首个事件", TrayIconMetricMode.CustomCountdown),
         };
 
+        TaskbarMetricComboBox.ItemsSource = new[]
+        {
+            new SelectionItem<TrayIconMetricMode>("一生", TrayIconMetricMode.Life),
+            new SelectionItem<TrayIconMetricMode>("本年", TrayIconMetricMode.Year),
+            new SelectionItem<TrayIconMetricMode>("本月", TrayIconMetricMode.Month),
+            new SelectionItem<TrayIconMetricMode>("本周", TrayIconMetricMode.Week),
+            new SelectionItem<TrayIconMetricMode>("本天", TrayIconMetricMode.Day),
+            new SelectionItem<TrayIconMetricMode>("首个事件", TrayIconMetricMode.CustomCountdown),
+        };
+
         BirthDatePicker.SelectedDate = Result.BirthDate;
         LifeExpectancyTextBox.Text = Result.LifeExpectancyYears.ToString(CultureInfo.InvariantCulture);
         WeekStartComboBox.SelectedIndex = Result.WeekStartMode == WeekStartMode.Monday ? 0 : 1;
@@ -75,6 +85,18 @@ public partial class SettingsWindow : Window
             TrayIconMetricMode.CustomCountdown => 6,
             _ => 4,
         };
+        TaskbarDisplayCheckBox.IsChecked = Result.TaskbarDisplayEnabled;
+        TaskbarMetricComboBox.SelectedIndex = Result.TaskbarMetric switch
+        {
+            TrayIconMetricMode.Life => 0,
+            TrayIconMetricMode.Year => 1,
+            TrayIconMetricMode.Month => 2,
+            TrayIconMetricMode.Week => 3,
+            TrayIconMetricMode.Day => 4,
+            TrayIconMetricMode.CustomCountdown => 5,
+            _ => 3,
+        };
+        UpdateTaskbarMetricAvailability();
 
         CustomEventsItemsControl.ItemsSource = _eventDrafts;
 
@@ -115,8 +137,9 @@ public partial class SettingsWindow : Window
         var weekStartSelection = WeekStartComboBox.SelectedItem as SelectionItem<WeekStartMode>;
         var anchorSelection = WindowAnchorComboBox.SelectedItem as SelectionItem<WindowAnchor>;
         var trayMetricSelection = TrayIconMetricComboBox.SelectedItem as SelectionItem<TrayIconMetricMode>;
+        var taskbarMetricSelection = TaskbarMetricComboBox.SelectedItem as SelectionItem<TrayIconMetricMode>;
 
-        if (weekStartSelection is null || anchorSelection is null || trayMetricSelection is null)
+        if (weekStartSelection is null || anchorSelection is null || trayMetricSelection is null || taskbarMetricSelection is null)
         {
             System.Windows.MessageBox.Show(this, "请完成基础设置项。", "无法保存", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -154,6 +177,8 @@ public partial class SettingsWindow : Window
             WeekStartMode = weekStartSelection.Value,
             WindowAnchor = anchorSelection.Value,
             TrayIconMetric = trayMetricSelection.Value,
+            TaskbarDisplayEnabled = TaskbarDisplayCheckBox.IsChecked == true,
+            TaskbarMetric = taskbarMetricSelection.Value,
             CustomEvents = customEvents,
             CustomCountdownEnabled = primaryEvent is not null,
             CustomCountdownTitle = primaryEvent?.Title ?? "自定义倒计时",
@@ -204,12 +229,22 @@ public partial class SettingsWindow : Window
         DialogResult = false;
     }
 
+    private void TaskbarDisplayCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        UpdateTaskbarMetricAvailability();
+    }
+
     private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             DragMove();
         }
+    }
+
+    private void UpdateTaskbarMetricAvailability()
+    {
+        TaskbarMetricComboBox.IsEnabled = TaskbarDisplayCheckBox.IsChecked == true;
     }
 
     private static IEnumerable<CustomEventSettings> GetSeedEvents(AppSettings settings)

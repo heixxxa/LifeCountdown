@@ -12,6 +12,10 @@ public sealed class AppSettings
 
     public TrayIconMetricMode TrayIconMetric { get; set; } = TrayIconMetricMode.Week;
 
+    public bool TaskbarDisplayEnabled { get; set; }
+
+    public TrayIconMetricMode TaskbarMetric { get; set; } = TrayIconMetricMode.Week;
+
     public bool CustomCountdownEnabled { get; set; }
 
     public string CustomCountdownTitle { get; set; } = "自定义倒计时";
@@ -31,6 +35,8 @@ public sealed class AppSettings
             WeekStartMode = WeekStartMode,
             WindowAnchor = WindowAnchor,
             TrayIconMetric = TrayIconMetric,
+            TaskbarDisplayEnabled = TaskbarDisplayEnabled,
+            TaskbarMetric = TaskbarMetric,
             CustomCountdownEnabled = CustomCountdownEnabled,
             CustomCountdownTitle = CustomCountdownTitle,
             CustomCountdownStartDate = CustomCountdownStartDate,

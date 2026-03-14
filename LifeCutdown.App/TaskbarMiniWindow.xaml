@@ -1,0 +1,45 @@
+<Window x:Class="LifeCutdown.App.TaskbarMiniWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="任务栏窗口"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ShowActivated="False"
+        Focusable="False"
+        SizeToContent="WidthAndHeight">
+    <Border x:Name="RootBorder"
+            Background="#CC1B1C20"
+            BorderBrush="#26FFFFFF"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="10,6"
+            Cursor="Hand"
+            MouseLeftButtonUp="RootBorder_MouseLeftButtonUp"
+            ToolTipService.ShowDuration="60000">
+        <StackPanel MinWidth="124" MaxWidth="184">
+            <TextBlock x:Name="MetricTextBlock"
+                       FontSize="12.5"
+                       FontWeight="SemiBold"
+                       Foreground="#FFF7F4ED"
+                       TextTrimming="CharacterEllipsis" />
+
+            <Border x:Name="ProgressTrackBorder"
+                    Margin="0,5,0,0"
+                    Height="4"
+                    Background="#30FFFFFF"
+                    CornerRadius="999"
+                    SnapsToDevicePixels="True">
+                <Border x:Name="ProgressFillBorder"
+                        HorizontalAlignment="Left"
+                        Height="4"
+                        Width="0"
+                        Background="#FF447054"
+                        CornerRadius="999" />
+            </Border>
+        </StackPanel>
+    </Border>
+</Window>
