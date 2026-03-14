@@ -71,7 +71,38 @@ public class ProgressCalculatorTests
     }
 
     [Fact]
-    public void CustomCountdown_ReturnsMidpointForMidRangeDate()
+    public void EventMetrics_ReturnConfiguredEvents()
+    {
+        var settings = new AppSettings
+        {
+            CustomEvents = new List<CustomEventSettings>
+            {
+                new()
+                {
+                    Title = "项目截止",
+                    StartDate = new DateTime(2026, 3, 1),
+                    TargetDate = new DateTime(2026, 3, 11),
+                },
+                new()
+                {
+                    Title = "旅行",
+                    StartDate = new DateTime(2026, 3, 5),
+                    TargetDate = new DateTime(2026, 3, 25),
+                },
+            },
+        };
+
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 6, 0, 0, 0), settings);
+
+        Assert.Equal(2, snapshot.EventMetrics.Count);
+        Assert.Equal("项目截止", snapshot.EventMetrics[0].Title);
+        Assert.InRange(snapshot.EventMetrics[0].Percentage, 50.0, 50.1);
+        Assert.Equal("旅行", snapshot.EventMetrics[1].Title);
+        Assert.InRange(snapshot.EventMetrics[1].Percentage, 5.0, 5.1);
+    }
+
+    [Fact]
+    public void EventMetrics_FallsBackToLegacyCustomCountdown()
     {
         var settings = new AppSettings
         {
@@ -83,12 +114,13 @@ public class ProgressCalculatorTests
 
         var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 6, 0, 0, 0), settings);
 
-        Assert.Equal("项目截止", snapshot.CustomCountdown.Title);
-        Assert.InRange(snapshot.CustomCountdown.Percentage, 50.0, 50.1);
+        Assert.Single(snapshot.EventMetrics);
+        Assert.Equal("项目截止", snapshot.EventMetrics[0].Title);
+        Assert.InRange(snapshot.EventMetrics[0].Percentage, 50.0, 50.1);
     }
 
     [Fact]
-    public void CustomCountdown_ShowsPlaceholderWhenDisabled()
+    public void EventMetrics_ReturnsEmptyWhenDisabled()
     {
         var settings = new AppSettings
         {
@@ -97,8 +129,7 @@ public class ProgressCalculatorTests
 
         var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 6, 0, 0, 0), settings);
 
-        Assert.Equal(0, snapshot.CustomCountdown.Percentage);
-        Assert.Contains("未启用", snapshot.CustomCountdown.Caption);
+        Assert.Empty(snapshot.EventMetrics);
     }
 
     [Fact]
@@ -117,16 +148,33 @@ public class ProgressCalculatorTests
     {
         var settings = new AppSettings
         {
-            CustomCountdownEnabled = true,
-            CustomCountdownTitle = "发版",
-            CustomCountdownStartDate = new DateTime(2026, 3, 1),
-            CustomCountdownTargetDate = new DateTime(2026, 3, 20),
+            CustomEvents = new List<CustomEventSettings>
+            {
+                new()
+                {
+                    Title = "发版",
+                    StartDate = new DateTime(2026, 3, 1),
+                    TargetDate = new DateTime(2026, 3, 20),
+                },
+            },
         };
 
         var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 10, 0, 0, 0), settings);
         var selected = TrayMetricSelector.SelectMetric(snapshot, TrayIconMetricMode.CustomCountdown);
 
         Assert.Equal("发版", selected.Title);
-        Assert.Equal(snapshot.CustomCountdown.Percentage, selected.Percentage);
+        Assert.Equal(snapshot.EventMetrics[0].Percentage, selected.Percentage);
+    }
+
+    [Fact]
+    public void TrayMetricSelector_ReturnsPlaceholderWhenNoEventsExist()
+    {
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 10, 0, 0, 0), new AppSettings());
+
+        var selected = TrayMetricSelector.SelectMetric(snapshot, TrayIconMetricMode.CustomCountdown);
+
+        Assert.Equal("事件", selected.Title);
+        Assert.Equal(0, selected.Percentage);
+        Assert.Contains("未配置事件", selected.Caption);
     }
 }

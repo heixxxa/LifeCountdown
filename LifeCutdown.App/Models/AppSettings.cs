@@ -20,6 +20,8 @@ public sealed class AppSettings
 
     public DateTime CustomCountdownTargetDate { get; set; } = DateTime.Today.AddDays(30);
 
+    public List<CustomEventSettings> CustomEvents { get; set; } = new();
+
     public AppSettings Clone()
     {
         return new AppSettings
@@ -33,6 +35,7 @@ public sealed class AppSettings
             CustomCountdownTitle = CustomCountdownTitle,
             CustomCountdownStartDate = CustomCountdownStartDate,
             CustomCountdownTargetDate = CustomCountdownTargetDate,
+            CustomEvents = CustomEvents.Select(customEvent => customEvent.Clone()).ToList(),
         };
     }
 }

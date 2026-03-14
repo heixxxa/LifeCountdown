@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ namespace LifeCutdown.App;
 
 public partial class SettingsWindow : Window
 {
+    private readonly ObservableCollection<CustomEventDraft> _eventDrafts = new();
     private readonly SystemTrayController _systemTrayController = new();
 
     private sealed record SelectionItem<T>(string Label, T Value)
@@ -16,6 +18,17 @@ public partial class SettingsWindow : Window
         {
             return Label;
         }
+    }
+
+    private sealed class CustomEventDraft
+    {
+        public string Id { get; init; } = Guid.NewGuid().ToString("N");
+
+        public string Title { get; set; } = "自定义事件";
+
+        public DateTime? StartDate { get; set; } = DateTime.Today;
+
+        public DateTime? TargetDate { get; set; } = DateTime.Today.AddDays(30);
     }
 
     public SettingsWindow(AppSettings currentSettings)
@@ -44,7 +57,7 @@ public partial class SettingsWindow : Window
             new SelectionItem<TrayIconMetricMode>("本月", TrayIconMetricMode.Month),
             new SelectionItem<TrayIconMetricMode>("本周", TrayIconMetricMode.Week),
             new SelectionItem<TrayIconMetricMode>("本天", TrayIconMetricMode.Day),
-            new SelectionItem<TrayIconMetricMode>("自定义目标", TrayIconMetricMode.CustomCountdown),
+            new SelectionItem<TrayIconMetricMode>("首个事件", TrayIconMetricMode.CustomCountdown),
         };
 
         BirthDatePicker.SelectedDate = Result.BirthDate;
@@ -63,10 +76,18 @@ public partial class SettingsWindow : Window
             _ => 4,
         };
 
-        EnableCustomCountdownCheckBox.IsChecked = Result.CustomCountdownEnabled;
-        CustomCountdownTitleTextBox.Text = Result.CustomCountdownTitle;
-        CustomCountdownStartDatePicker.SelectedDate = Result.CustomCountdownStartDate;
-        CustomCountdownTargetDatePicker.SelectedDate = Result.CustomCountdownTargetDate;
+        CustomEventsItemsControl.ItemsSource = _eventDrafts;
+
+        foreach (var customEvent in GetSeedEvents(Result))
+        {
+            _eventDrafts.Add(new CustomEventDraft
+            {
+                Id = string.IsNullOrWhiteSpace(customEvent.Id) ? Guid.NewGuid().ToString("N") : customEvent.Id,
+                Title = customEvent.Title,
+                StartDate = customEvent.StartDate,
+                TargetDate = customEvent.TargetDate,
+            });
+        }
     }
 
     public AppSettings Result { get; private set; }
@@ -101,19 +122,30 @@ public partial class SettingsWindow : Window
             return;
         }
 
-        var customCountdownEnabled = EnableCustomCountdownCheckBox.IsChecked == true;
-        var customCountdownTitle = string.IsNullOrWhiteSpace(CustomCountdownTitleTextBox.Text)
-            ? "自定义倒计时"
-            : CustomCountdownTitleTextBox.Text.Trim();
+        var customEvents = new List<CustomEventSettings>();
 
-        var customCountdownStartDate = CustomCountdownStartDatePicker.SelectedDate ?? DateTime.Today;
-        var customCountdownTargetDate = CustomCountdownTargetDatePicker.SelectedDate ?? customCountdownStartDate.AddDays(30);
-
-        if (customCountdownEnabled && customCountdownTargetDate <= customCountdownStartDate)
+        foreach (var draft in _eventDrafts)
         {
-            System.Windows.MessageBox.Show(this, "自定义倒计时的目标日期必须晚于开始日期。", "无法保存", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
+            var title = string.IsNullOrWhiteSpace(draft.Title) ? "自定义事件" : draft.Title.Trim();
+            var startDate = draft.StartDate ?? DateTime.Today;
+            var targetDate = draft.TargetDate ?? startDate.AddDays(30);
+
+            if (targetDate <= startDate)
+            {
+                System.Windows.MessageBox.Show(this, $"事件“{title}”的目标日期必须晚于开始日期。", "无法保存", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            customEvents.Add(new CustomEventSettings
+            {
+                Id = draft.Id,
+                Title = title,
+                StartDate = startDate.Date,
+                TargetDate = targetDate.Date,
+            });
         }
+
+        var primaryEvent = customEvents.FirstOrDefault();
 
         Result = new AppSettings
         {
@@ -122,13 +154,34 @@ public partial class SettingsWindow : Window
             WeekStartMode = weekStartSelection.Value,
             WindowAnchor = anchorSelection.Value,
             TrayIconMetric = trayMetricSelection.Value,
-            CustomCountdownEnabled = customCountdownEnabled,
-            CustomCountdownTitle = customCountdownTitle,
-            CustomCountdownStartDate = customCountdownStartDate.Date,
-            CustomCountdownTargetDate = customCountdownTargetDate.Date,
+            CustomEvents = customEvents,
+            CustomCountdownEnabled = primaryEvent is not null,
+            CustomCountdownTitle = primaryEvent?.Title ?? "自定义倒计时",
+            CustomCountdownStartDate = primaryEvent?.StartDate ?? DateTime.Today,
+            CustomCountdownTargetDate = primaryEvent?.TargetDate ?? DateTime.Today.AddDays(30),
         };
 
         DialogResult = true;
+    }
+
+    private void AddCustomEventButton_Click(object sender, RoutedEventArgs e)
+    {
+        _eventDrafts.Add(new CustomEventDraft
+        {
+            Title = $"事件 {_eventDrafts.Count + 1}",
+            StartDate = DateTime.Today,
+            TargetDate = DateTime.Today.AddDays(30),
+        });
+    }
+
+    private void RemoveCustomEventButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: CustomEventDraft draft })
+        {
+            return;
+        }
+
+        _eventDrafts.Remove(draft);
     }
 
     private void OpenSystemTraySettingsButton_Click(object sender, RoutedEventArgs e)
@@ -157,5 +210,28 @@ public partial class SettingsWindow : Window
         {
             DragMove();
         }
+    }
+
+    private static IEnumerable<CustomEventSettings> GetSeedEvents(AppSettings settings)
+    {
+        if (settings.CustomEvents.Count > 0)
+        {
+            return settings.CustomEvents;
+        }
+
+        if (!settings.CustomCountdownEnabled)
+        {
+            return Enumerable.Empty<CustomEventSettings>();
+        }
+
+        return new[]
+        {
+            new CustomEventSettings
+            {
+                Title = settings.CustomCountdownTitle,
+                StartDate = settings.CustomCountdownStartDate,
+                TargetDate = settings.CustomCountdownTargetDate,
+            }
+        };
     }
 }

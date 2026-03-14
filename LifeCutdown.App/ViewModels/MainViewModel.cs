@@ -1,4 +1,4 @@
-using System.Globalization;
+using System.Collections.ObjectModel;
 using LifeCutdown.App.Helpers;
 using LifeCutdown.App.Models;
 using LifeCutdown.App.Services;
@@ -7,48 +7,53 @@ namespace LifeCutdown.App.ViewModels;
 
 public sealed class MainViewModel : ObservableObject
 {
-    private readonly CultureInfo _culture = CultureInfo.GetCultureInfo("zh-CN");
+    private readonly ProgressMetric[] _timeMetricItems;
     private AppSettings _settings;
-    private string _nowText = string.Empty;
-    private string _footerText = string.Empty;
+    private string _eventEmptyText = string.Empty;
+    private bool _hasEventMetrics;
 
     public MainViewModel(AppSettings settings)
     {
         _settings = settings.Clone();
 
-        LifeMetric = new ProgressMetric("一生");
-        YearMetric = new ProgressMetric("本年");
-        MonthMetric = new ProgressMetric("本月");
-        WeekMetric = new ProgressMetric("本周");
-        DayMetric = new ProgressMetric("本天");
-        CustomCountdownMetric = new ProgressMetric("自定义倒计时");
+        _timeMetricItems = new[]
+        {
+            new ProgressMetric("一生"),
+            new ProgressMetric("本年"),
+            new ProgressMetric("本月"),
+            new ProgressMetric("本周"),
+            new ProgressMetric("本天"),
+        };
+
+        TimeMetrics = new ObservableCollection<ProgressMetric>(_timeMetricItems);
+        EventMetrics = new ObservableCollection<ProgressMetric>();
 
         Refresh(DateTime.Now);
     }
 
-    public ProgressMetric LifeMetric { get; }
+    public ObservableCollection<ProgressMetric> TimeMetrics { get; }
 
-    public ProgressMetric YearMetric { get; }
+    public ObservableCollection<ProgressMetric> EventMetrics { get; }
 
-    public ProgressMetric MonthMetric { get; }
-
-    public ProgressMetric WeekMetric { get; }
-
-    public ProgressMetric DayMetric { get; }
-
-    public ProgressMetric CustomCountdownMetric { get; }
-
-    public string NowText
+    public string EventEmptyText
     {
-        get => _nowText;
-        private set => SetProperty(ref _nowText, value);
+        get => _eventEmptyText;
+        private set => SetProperty(ref _eventEmptyText, value);
     }
 
-    public string FooterText
+    public bool HasEventMetrics
     {
-        get => _footerText;
-        private set => SetProperty(ref _footerText, value);
+        get => _hasEventMetrics;
+        private set
+        {
+            if (SetProperty(ref _hasEventMetrics, value))
+            {
+                OnPropertyChanged(nameof(ShowEventEmptyState));
+            }
+        }
     }
+
+    public bool ShowEventEmptyState => !HasEventMetrics;
 
     public void UpdateSettings(AppSettings settings)
     {
@@ -60,17 +65,35 @@ public sealed class MainViewModel : ObservableObject
     {
         var snapshot = ProgressCalculator.BuildDashboard(now, _settings);
 
-        Apply(LifeMetric, snapshot.Life);
-        Apply(YearMetric, snapshot.Year);
-        Apply(MonthMetric, snapshot.Month);
-        Apply(WeekMetric, snapshot.Week);
-        Apply(DayMetric, snapshot.Day);
-        Apply(CustomCountdownMetric, snapshot.CustomCountdown);
+        Apply(_timeMetricItems[0], snapshot.Life);
+        Apply(_timeMetricItems[1], snapshot.Year);
+        Apply(_timeMetricItems[2], snapshot.Month);
+        Apply(_timeMetricItems[3], snapshot.Week);
+        Apply(_timeMetricItems[4], snapshot.Day);
 
-        NowText = now.ToString("yyyy 年 M 月 d 日 dddd HH:mm:ss", _culture);
-        FooterText = _settings.WindowAnchor == WindowAnchor.BottomRight
-            ? "窗口固定在右下角，靠近托盘；“托盘图标”按钮可展开或收起系统隐藏图标面板。"
-            : "窗口固定在右上角；“托盘图标”按钮可展开或收起系统隐藏图标面板。";
+        SyncEventMetrics(snapshot.EventMetrics);
+        HasEventMetrics = EventMetrics.Count > 0;
+        EventEmptyText = EventMetrics.Count == 0
+            ? "暂无自定义事件。请从托盘菜单打开设置进行添加。"
+            : string.Empty;
+    }
+
+    private void SyncEventMetrics(IReadOnlyList<MetricSnapshot> snapshots)
+    {
+        while (EventMetrics.Count < snapshots.Count)
+        {
+            EventMetrics.Add(new ProgressMetric("事件"));
+        }
+
+        while (EventMetrics.Count > snapshots.Count)
+        {
+            EventMetrics.RemoveAt(EventMetrics.Count - 1);
+        }
+
+        for (var index = 0; index < snapshots.Count; index++)
+        {
+            Apply(EventMetrics[index], snapshots[index]);
+        }
     }
 
     private static void Apply(ProgressMetric target, MetricSnapshot snapshot)

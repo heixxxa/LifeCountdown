@@ -97,6 +97,40 @@ public sealed class SettingsService
             normalized.CustomCountdownTargetDate = normalized.CustomCountdownStartDate.AddDays(1);
         }
 
+        normalized.CustomEvents = normalized.CustomEvents
+            .Select(NormalizeCustomEvent)
+            .ToList();
+
+        if (normalized.CustomEvents.Count == 0 && normalized.CustomCountdownEnabled)
+        {
+            normalized.CustomEvents.Add(NormalizeCustomEvent(new CustomEventSettings
+            {
+                Title = normalized.CustomCountdownTitle,
+                StartDate = normalized.CustomCountdownStartDate,
+                TargetDate = normalized.CustomCountdownTargetDate,
+            }));
+        }
+
+        return normalized;
+    }
+
+    private static CustomEventSettings NormalizeCustomEvent(CustomEventSettings customEvent)
+    {
+        var normalized = customEvent.Clone();
+
+        if (string.IsNullOrWhiteSpace(normalized.Title))
+        {
+            normalized.Title = "自定义事件";
+        }
+
+        normalized.StartDate = normalized.StartDate == default ? DateTime.Today : normalized.StartDate.Date;
+        normalized.TargetDate = normalized.TargetDate == default ? normalized.StartDate.AddDays(30) : normalized.TargetDate.Date;
+
+        if (normalized.TargetDate <= normalized.StartDate)
+        {
+            normalized.TargetDate = normalized.StartDate.AddDays(1);
+        }
+
         return normalized;
     }
 }

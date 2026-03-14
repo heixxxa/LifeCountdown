@@ -8,4 +8,4 @@ public sealed record DashboardSnapshot(
     MetricSnapshot Month,
     MetricSnapshot Week,
     MetricSnapshot Day,
-    MetricSnapshot CustomCountdown);
+    IReadOnlyList<MetricSnapshot> EventMetrics);
