@@ -36,10 +36,32 @@ public partial class SettingsWindow : Window
             new SelectionItem<WindowAnchor>("右上角", WindowAnchor.TopRight),
         };
 
+        TrayIconMetricComboBox.ItemsSource = new[]
+        {
+            new SelectionItem<TrayIconMetricMode>("默认应用图标", TrayIconMetricMode.DefaultIcon),
+            new SelectionItem<TrayIconMetricMode>("一生", TrayIconMetricMode.Life),
+            new SelectionItem<TrayIconMetricMode>("本年", TrayIconMetricMode.Year),
+            new SelectionItem<TrayIconMetricMode>("本月", TrayIconMetricMode.Month),
+            new SelectionItem<TrayIconMetricMode>("本周", TrayIconMetricMode.Week),
+            new SelectionItem<TrayIconMetricMode>("本天", TrayIconMetricMode.Day),
+            new SelectionItem<TrayIconMetricMode>("自定义目标", TrayIconMetricMode.CustomCountdown),
+        };
+
         BirthDatePicker.SelectedDate = Result.BirthDate;
         LifeExpectancyTextBox.Text = Result.LifeExpectancyYears.ToString(CultureInfo.InvariantCulture);
         WeekStartComboBox.SelectedIndex = Result.WeekStartMode == WeekStartMode.Monday ? 0 : 1;
         WindowAnchorComboBox.SelectedIndex = Result.WindowAnchor == WindowAnchor.BottomRight ? 0 : 1;
+        TrayIconMetricComboBox.SelectedIndex = Result.TrayIconMetric switch
+        {
+            TrayIconMetricMode.DefaultIcon => 0,
+            TrayIconMetricMode.Life => 1,
+            TrayIconMetricMode.Year => 2,
+            TrayIconMetricMode.Month => 3,
+            TrayIconMetricMode.Week => 4,
+            TrayIconMetricMode.Day => 5,
+            TrayIconMetricMode.CustomCountdown => 6,
+            _ => 4,
+        };
 
         EnableCustomCountdownCheckBox.IsChecked = Result.CustomCountdownEnabled;
         CustomCountdownTitleTextBox.Text = Result.CustomCountdownTitle;
@@ -71,8 +93,9 @@ public partial class SettingsWindow : Window
 
         var weekStartSelection = WeekStartComboBox.SelectedItem as SelectionItem<WeekStartMode>;
         var anchorSelection = WindowAnchorComboBox.SelectedItem as SelectionItem<WindowAnchor>;
+        var trayMetricSelection = TrayIconMetricComboBox.SelectedItem as SelectionItem<TrayIconMetricMode>;
 
-        if (weekStartSelection is null || anchorSelection is null)
+        if (weekStartSelection is null || anchorSelection is null || trayMetricSelection is null)
         {
             System.Windows.MessageBox.Show(this, "请完成基础设置项。", "无法保存", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -98,6 +121,7 @@ public partial class SettingsWindow : Window
             LifeExpectancyYears = lifeExpectancy,
             WeekStartMode = weekStartSelection.Value,
             WindowAnchor = anchorSelection.Value,
+            TrayIconMetric = trayMetricSelection.Value,
             CustomCountdownEnabled = customCountdownEnabled,
             CustomCountdownTitle = customCountdownTitle,
             CustomCountdownStartDate = customCountdownStartDate.Date,

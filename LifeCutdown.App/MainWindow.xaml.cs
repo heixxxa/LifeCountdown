@@ -16,6 +16,8 @@ public partial class MainWindow : Window
     private readonly bool _showSettingsOnFirstLaunch;
     private AppSettings _settings;
 
+    public event EventHandler<AppSettings>? SettingsSaved;
+
     public MainWindow(SettingsService settingsService, AppSettings settings, bool showSettingsOnFirstLaunch)
     {
         InitializeComponent();
@@ -64,6 +66,7 @@ public partial class MainWindow : Window
         _settings = dialog.Result.Clone();
         _settingsService.Save(_settings);
         _viewModel.UpdateSettings(_settings);
+        SettingsSaved?.Invoke(this, _settings.Clone());
         PositionWindow();
     }
 

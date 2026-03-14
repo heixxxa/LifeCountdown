@@ -100,4 +100,33 @@ public class ProgressCalculatorTests
         Assert.Equal(0, snapshot.CustomCountdown.Percentage);
         Assert.Contains("未启用", snapshot.CustomCountdown.Caption);
     }
+
+    [Fact]
+    public void TrayMetricSelector_ReturnsSelectedDayMetric()
+    {
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 11, 12, 0, 0), new AppSettings());
+
+        var selected = TrayMetricSelector.SelectMetric(snapshot, TrayIconMetricMode.Day);
+
+        Assert.Equal(snapshot.Day.Title, selected.Title);
+        Assert.Equal(snapshot.Day.Percentage, selected.Percentage);
+    }
+
+    [Fact]
+    public void TrayMetricSelector_ReturnsSelectedCustomMetric()
+    {
+        var settings = new AppSettings
+        {
+            CustomCountdownEnabled = true,
+            CustomCountdownTitle = "发版",
+            CustomCountdownStartDate = new DateTime(2026, 3, 1),
+            CustomCountdownTargetDate = new DateTime(2026, 3, 20),
+        };
+
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 10, 0, 0, 0), settings);
+        var selected = TrayMetricSelector.SelectMetric(snapshot, TrayIconMetricMode.CustomCountdown);
+
+        Assert.Equal("发版", selected.Title);
+        Assert.Equal(snapshot.CustomCountdown.Percentage, selected.Percentage);
+    }
 }

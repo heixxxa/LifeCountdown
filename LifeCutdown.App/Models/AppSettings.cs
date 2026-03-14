@@ -10,6 +10,8 @@ public sealed class AppSettings
 
     public WindowAnchor WindowAnchor { get; set; } = WindowAnchor.BottomRight;
 
+    public TrayIconMetricMode TrayIconMetric { get; set; } = TrayIconMetricMode.Week;
+
     public bool CustomCountdownEnabled { get; set; }
 
     public string CustomCountdownTitle { get; set; } = "自定义倒计时";
@@ -26,6 +28,7 @@ public sealed class AppSettings
             LifeExpectancyYears = LifeExpectancyYears,
             WeekStartMode = WeekStartMode,
             WindowAnchor = WindowAnchor,
+            TrayIconMetric = TrayIconMetric,
             CustomCountdownEnabled = CustomCountdownEnabled,
             CustomCountdownTitle = CustomCountdownTitle,
             CustomCountdownStartDate = CustomCountdownStartDate,
@@ -44,4 +47,15 @@ public enum WindowAnchor
 {
     TopRight,
     BottomRight,
+}
+
+public enum TrayIconMetricMode
+{
+    DefaultIcon,
+    Life,
+    Year,
+    Month,
+    Week,
+    Day,
+    CustomCountdown,
 }

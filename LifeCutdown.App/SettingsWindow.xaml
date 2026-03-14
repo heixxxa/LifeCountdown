@@ -66,6 +66,16 @@
                                     </StackPanel>
                                 </Grid>
 
+                                <StackPanel Margin="0,14,0,0">
+                                    <TextBlock Text="托盘图标显示" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                    <ComboBox x:Name="TrayIconMetricComboBox" Margin="0,8,0,0" Height="36" />
+                                    <TextBlock Text="把托盘图标渲染成所选目标的迷你进度条；悬停时会显示该目标的百分比。"
+                                               Margin="0,6,0,0"
+                                               FontSize="12"
+                                               Foreground="#756F67"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
                                 <Border Background="#EEE7DB" CornerRadius="16" Padding="12,10" Margin="0,14,0,0">
                                     <StackPanel>
                                         <TextBlock Text="其他托盘图标" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />

@@ -74,6 +74,11 @@ public sealed class SettingsService
         normalized.BirthDate = normalized.BirthDate.Date;
         normalized.LifeExpectancyYears = Math.Clamp(normalized.LifeExpectancyYears, 1, 130);
 
+        if (!Enum.IsDefined(normalized.TrayIconMetric))
+        {
+            normalized.TrayIconMetric = TrayIconMetricMode.Week;
+        }
+
         if (string.IsNullOrWhiteSpace(normalized.CustomCountdownTitle))
         {
             normalized.CustomCountdownTitle = "自定义倒计时";
