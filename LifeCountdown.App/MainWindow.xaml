@@ -1,0 +1,152 @@
+<Window x:Class="LifeCountdown.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:LifeCountdown.App.Controls"
+        mc:Ignorable="d"
+        Title="人生进度条"
+        Width="480"
+        Height="700"
+        MinWidth="420"
+        ShowInTaskbar="False"
+        Topmost="True"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStyle="None"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#F6F2EB" />
+        <SolidColorBrush x:Key="SectionBrush" Color="#FCFBF7" />
+        <SolidColorBrush x:Key="RowBrush" Color="#FFFDF9" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#202024" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#756F67" />
+
+        <Style x:Key="MetricRowBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource RowBrush}" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="ToolTipService.ShowDuration" Value="60000" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF7F1E7" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="{StaticResource SurfaceBrush}"
+            CornerRadius="28"
+            Padding="22"
+            MouseLeftButtonDown="Header_MouseLeftButtonDown">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="28" ShadowDepth="10" Opacity="0.18" Color="#22000000" />
+        </Border.Effect>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Background="{StaticResource SectionBrush}" CornerRadius="24" Padding="18" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="时间进度" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                        <TextBlock Text="一生、本年、本月、本周、本天。悬浮可查看详细说明。"
+                                   Margin="0,6,0,0"
+                                   FontSize="12.5"
+                                   Foreground="{StaticResource MutedBrush}" />
+
+                        <ItemsControl ItemsSource="{Binding TimeMetrics}" Margin="0,16,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource MetricRowBorderStyle}" ToolTip="{Binding TooltipText}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="84" />
+                                                <ColumnDefinition Width="64" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding PercentLabel}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="22"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource AccentBrush}" />
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Title}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="18"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource AccentBrush}" />
+
+                                            <controls:ProgressTrack Grid.Column="2"
+                                                                    Percentage="{Binding Percentage}"
+                                                                    Margin="14,2,0,0"
+                                                                    Height="12"
+                                                                    MarkerHeight="18"
+                                                                    MarkerTopOffset="-3" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource SectionBrush}" CornerRadius="24" Padding="18">
+                    <StackPanel>
+                        <TextBlock Text="事件进度" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                        <TextBlock Text="可在托盘菜单的设置中维护多个自定义事件。悬浮可查看详细说明。"
+                                   Margin="0,6,0,0"
+                                   FontSize="12.5"
+                                   Foreground="{StaticResource MutedBrush}" />
+
+                        <TextBlock Text="{Binding EventEmptyText}"
+                                   Margin="0,16,0,0"
+                                   FontSize="13"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   Visibility="{Binding ShowEventEmptyState, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                        <ItemsControl ItemsSource="{Binding EventMetrics}" Margin="0,16,0,0" Visibility="{Binding HasEventMetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource MetricRowBorderStyle}" ToolTip="{Binding TooltipText}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="84" />
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding PercentLabel}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="22"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource AccentBrush}" />
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Title}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="17"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource AccentBrush}"
+                                                       TextTrimming="CharacterEllipsis" />
+
+                                            <controls:ProgressTrack Grid.Column="2"
+                                                                    Percentage="{Binding Percentage}"
+                                                                    Margin="14,2,0,0"
+                                                                    Height="12"
+                                                                    MarkerHeight="18"
+                                                                    MarkerTopOffset="-3" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</Window>
