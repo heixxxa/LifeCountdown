@@ -6,19 +6,29 @@ public static class MetricTextFormatter
 {
     public static string BuildTrayText(MetricSnapshot metric)
     {
-        return TrimToLength($"{NormalizeTitle(metric.Title)} {metric.Percentage:0.0}%", 63);
+        return TrimToLength($"{NormalizeTitle(metric.Title)} {BuildTaskbarWindowPercentage(metric)}", 63);
     }
 
     public static string BuildTaskbarWindowText(MetricSnapshot metric)
     {
-        return $"{TrimToLength(NormalizeTitle(metric.Title), 12)} {metric.Percentage:0.0}%";
+        return $"{BuildTaskbarWindowTitle(metric)} {BuildTaskbarWindowPercentage(metric)}";
+    }
+
+    public static string BuildTaskbarWindowTitle(MetricSnapshot metric)
+    {
+        return TrimToLength(NormalizeTitle(metric.Title), 12);
+    }
+
+    public static string BuildTaskbarWindowPercentage(MetricSnapshot metric)
+    {
+        return $"{metric.Percentage:0.0}%";
     }
 
     public static string BuildTaskbarDescription(MetricSnapshot metric)
     {
         var parts = new[]
         {
-            $"{NormalizeTitle(metric.Title)} {metric.Percentage:0.0}%",
+            $"{NormalizeTitle(metric.Title)} {BuildTaskbarWindowPercentage(metric)}",
             metric.Caption?.Trim(),
             metric.Detail?.Trim(),
         };

@@ -46,9 +46,15 @@ public partial class TaskbarMiniWindow : Window
     public void UpdateMetric(MetricSnapshot metric, TrayIconMetricMode mode)
     {
         _percentage = metric.Percentage;
-        MetricTextBlock.Text = MetricTextFormatter.BuildTaskbarWindowText(metric);
+        MetricTitleTextBlock.Text = MetricTextFormatter.BuildTaskbarWindowTitle(metric);
+        MetricPercentageTextBlock.Text = MetricTextFormatter.BuildTaskbarWindowPercentage(metric);
         RootBorder.ToolTip = MetricTextFormatter.BuildTaskbarDescription(metric);
-        ProgressFillBorder.Background = new SolidColorBrush(GetMetricColor(mode));
+
+        var accentBrush = new SolidColorBrush(GetMetricColor(mode));
+        accentBrush.Freeze();
+        MetricTitleTextBlock.Foreground = accentBrush;
+        MetricPercentageTextBlock.Foreground = accentBrush;
+        ProgressFillRectangle.Fill = accentBrush;
 
         UpdateLayout();
         UpdateProgressBar();
@@ -166,21 +172,21 @@ public partial class TaskbarMiniWindow : Window
 
     private void UpdateProgressBar()
     {
-        var width = ProgressTrackBorder.ActualWidth;
-        ProgressFillBorder.Width = width * Math.Clamp(_percentage, 0, 100) / 100.0;
+        var width = ProgressTrackGrid.ActualWidth;
+        ProgressFillRectangle.Width = width * Math.Clamp(_percentage, 0, 100) / 100.0;
     }
 
     private static System.Windows.Media.Color GetMetricColor(TrayIconMetricMode mode)
     {
         return mode switch
         {
-            TrayIconMetricMode.Life => System.Windows.Media.Color.FromRgb(72, 90, 140),
-            TrayIconMetricMode.Year => System.Windows.Media.Color.FromRgb(68, 112, 84),
-            TrayIconMetricMode.Month => System.Windows.Media.Color.FromRgb(123, 88, 52),
-            TrayIconMetricMode.Week => System.Windows.Media.Color.FromRgb(32, 32, 36),
-            TrayIconMetricMode.Day => System.Windows.Media.Color.FromRgb(110, 60, 128),
-            TrayIconMetricMode.CustomCountdown => System.Windows.Media.Color.FromRgb(149, 68, 68),
-            _ => System.Windows.Media.Color.FromRgb(32, 32, 36),
+            TrayIconMetricMode.Life => System.Windows.Media.Color.FromRgb(116, 136, 158),
+            TrayIconMetricMode.Year => System.Windows.Media.Color.FromRgb(124, 157, 129),
+            TrayIconMetricMode.Month => System.Windows.Media.Color.FromRgb(170, 134, 88),
+            TrayIconMetricMode.Week => System.Windows.Media.Color.FromRgb(138, 146, 156),
+            TrayIconMetricMode.Day => System.Windows.Media.Color.FromRgb(145, 121, 169),
+            TrayIconMetricMode.CustomCountdown => System.Windows.Media.Color.FromRgb(183, 113, 106),
+            _ => System.Windows.Media.Color.FromRgb(138, 146, 156),
         };
     }
 

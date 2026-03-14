@@ -10,36 +10,58 @@
         Topmost="True"
         ShowActivated="False"
         Focusable="False"
-        SizeToContent="WidthAndHeight">
+        SizeToContent="WidthAndHeight"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display">
     <Border x:Name="RootBorder"
-            Background="#CC1B1C20"
-            BorderBrush="#26FFFFFF"
-            BorderThickness="1"
-            CornerRadius="10"
-            Padding="10,6"
+            Background="Transparent"
+            Padding="4,3,6,3"
             Cursor="Hand"
             MouseLeftButtonUp="RootBorder_MouseLeftButtonUp"
             ToolTipService.ShowDuration="60000">
-        <StackPanel MinWidth="124" MaxWidth="184">
-            <TextBlock x:Name="MetricTextBlock"
-                       FontSize="12.5"
-                       FontWeight="SemiBold"
-                       Foreground="#FFF7F4ED"
-                       TextTrimming="CharacterEllipsis" />
+        <Grid SnapsToDevicePixels="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="4" />
+            </Grid.RowDefinitions>
 
-            <Border x:Name="ProgressTrackBorder"
-                    Margin="0,5,0,0"
-                    Height="4"
-                    Background="#30FFFFFF"
-                    CornerRadius="999"
-                    SnapsToDevicePixels="True">
-                <Border x:Name="ProgressFillBorder"
-                        HorizontalAlignment="Left"
-                        Height="4"
-                        Width="0"
-                        Background="#FF447054"
-                        CornerRadius="999" />
-            </Border>
-        </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="68" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="MetricTitleTextBlock"
+                           Width="68"
+                           VerticalAlignment="Center"
+                           FontFamily="Microsoft YaHei UI"
+                           FontSize="11.5"
+                           FontWeight="Bold"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis" />
+
+                <TextBlock x:Name="MetricPercentageTextBlock"
+                           Grid.Column="1"
+                           Margin="6,0,0,0"
+                           VerticalAlignment="Center"
+                           FontFamily="Bahnschrift SemiCondensed"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="#FF89A28E" />
+            </Grid>
+
+            <Grid x:Name="ProgressTrackGrid"
+                  Grid.Row="1"
+                  Margin="0,4,0,0"
+                  Height="2"
+                  SnapsToDevicePixels="True">
+                <Rectangle Fill="#2AFFFFFF" />
+                <Rectangle x:Name="ProgressFillRectangle"
+                           HorizontalAlignment="Left"
+                           Width="0"
+                           Fill="#FF89A28E" />
+            </Grid>
+        </Grid>
     </Border>
 </Window>

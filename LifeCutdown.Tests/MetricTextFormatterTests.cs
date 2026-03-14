@@ -16,14 +16,23 @@ public class MetricTextFormatterTests
     }
 
     [Fact]
-    public void BuildTaskbarWindowText_TrimsLongMetricNames()
+    public void BuildTaskbarWindowTitle_TrimsLongMetricNames()
     {
         var metric = new MetricSnapshot("这是一个非常非常非常长的里程碑事件名称", 88.88, "caption", "detail");
 
-        var title = MetricTextFormatter.BuildTaskbarWindowText(metric);
+        var title = MetricTextFormatter.BuildTaskbarWindowTitle(metric);
 
-        Assert.StartsWith("这是一个非常非常非...", title);
-        Assert.Contains("88.9%", title);
+        Assert.Equal("这是一个非常非常非...", title);
+    }
+
+    [Fact]
+    public void BuildTaskbarWindowPercentage_UsesSingleDecimalPlace()
+    {
+        var metric = new MetricSnapshot("本周", 88.88, "caption", "detail");
+
+        var percentage = MetricTextFormatter.BuildTaskbarWindowPercentage(metric);
+
+        Assert.Equal("88.9%", percentage);
     }
 
     [Fact]
