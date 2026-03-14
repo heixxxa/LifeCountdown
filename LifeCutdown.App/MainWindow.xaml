@@ -6,9 +6,9 @@
         xmlns:controls="clr-namespace:LifeCutdown.App.Controls"
         mc:Ignorable="d"
         Title="人生进度条"
-        Width="430"
-        Height="590"
-        MinWidth="400"
+        Width="470"
+        Height="810"
+        MinWidth="430"
         ShowInTaskbar="False"
         Topmost="True"
         AllowsTransparency="True"
@@ -71,185 +71,225 @@
                 <DropShadowEffect BlurRadius="30" ShadowDepth="8" Opacity="0.18" Color="#11000000" />
             </Border.Effect>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Grid Margin="0,0,0,18" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,18" MouseLeftButtonDown="Header_MouseLeftButtonDown">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="人生进度条" FontSize="26" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Text="{Binding NowText}" Margin="0,6,0,0" FontSize="12.5" Foreground="{StaticResource MutedBrush}" />
+                        </StackPanel>
 
-                    <StackPanel>
-                        <TextBlock Text="人生进度条" FontSize="26" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
-                        <TextBlock Text="{Binding NowText}" Margin="0,6,0,0" FontSize="12.5" Foreground="{StaticResource MutedBrush}" />
-                    </StackPanel>
+                        <Button Grid.Column="1"
+                                Content="托盘图标"
+                                Click="TrayButton_Click"
+                                Style="{StaticResource GhostButtonStyle}"
+                                Margin="0,0,10,0" />
 
-                    <Button Grid.Column="1"
-                            Content="设置"
-                            Click="SettingsButton_Click"
-                            Style="{StaticResource GhostButtonStyle}"
-                            Margin="0,0,10,0" />
+                        <Button Grid.Column="2"
+                                Content="设置"
+                                Click="SettingsButton_Click"
+                                Style="{StaticResource GhostButtonStyle}"
+                                Margin="0,0,10,0" />
 
-                    <Button Grid.Column="2"
-                            Content="隐藏"
-                            Click="HideButton_Click"
-                            Style="{StaticResource GhostButtonStyle}" />
-                </Grid>
+                        <Button Grid.Column="3"
+                                Content="隐藏"
+                                Click="HideButton_Click"
+                                Style="{StaticResource GhostButtonStyle}" />
+                    </Grid>
 
-                <Border Grid.Row="1" Background="{StaticResource CardBackgroundBrush}" CornerRadius="26" Padding="20" Margin="0,0,0,18">
-                    <Grid>
+                    <Border Background="{StaticResource CardBackgroundBrush}" CornerRadius="26" Padding="20" Margin="0,0,0,18">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="一生" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+
+                            <Grid Grid.Row="1" Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="{Binding LifeMetric.PercentText}" FontSize="56" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock Grid.Column="1" Text="%" Margin="10,24,0,0" FontSize="21" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+
+                                <Border Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Padding="10,5"
+                                        Background="#EEE7DB"
+                                        CornerRadius="999">
+                                    <TextBlock Text="持续刷新" FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                </Border>
+                            </Grid>
+
+                            <TextBlock Grid.Row="2" Text="{Binding LifeMetric.Caption}" Margin="0,10,0,0" FontSize="13" Foreground="{StaticResource MutedBrush}" />
+
+                            <controls:ProgressTrack Grid.Row="3" Percentage="{Binding LifeMetric.Percentage}" Margin="0,16,0,10" />
+
+                            <TextBlock Grid.Row="4" Text="{Binding LifeMetric.Detail}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="当前进度" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Margin="4,0,0,12" />
+
+                    <Grid Margin="0,0,0,18">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="一生" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                        <Border Grid.Row="0" Grid.Column="0" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="0,0,8,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding YearMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding YearMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                                    <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                </Grid>
+                                <controls:ProgressTrack Grid.Row="2" Percentage="{Binding YearMetric.Percentage}" Margin="0,14,0,10" />
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Text="{Binding YearMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Text="{Binding YearMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
-                        <Grid Grid.Row="1" Margin="0,10,0,0">
+                        <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="8,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding MonthMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding MonthMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                                    <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                </Grid>
+                                <controls:ProgressTrack Grid.Row="2" Percentage="{Binding MonthMetric.Percentage}" Margin="0,14,0,10" />
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Text="{Binding MonthMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Text="{Binding MonthMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="0" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="0,0,8,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding WeekMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding WeekMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                                    <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                </Grid>
+                                <controls:ProgressTrack Grid.Row="2" Percentage="{Binding WeekMetric.Percentage}" Margin="0,14,0,10" />
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Text="{Binding WeekMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Text="{Binding WeekMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="8,0,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding DayMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding DayMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                                    <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                                </Grid>
+                                <controls:ProgressTrack Grid.Row="2" Percentage="{Binding DayMetric.Percentage}" Margin="0,14,0,10" />
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Text="{Binding DayMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
+                                    <TextBlock Text="{Binding DayMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <TextBlock Text="自定义倒计时" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Margin="4,0,0,12" />
+
+                    <Border Background="{StaticResource CardBackgroundBrush}" CornerRadius="24" Padding="18" Margin="0,0,0,18">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding LifeMetric.PercentText}" FontSize="56" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
-                            <TextBlock Grid.Column="1" Text="%" Margin="10,24,0,0" FontSize="21" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                            <TextBlock Text="{Binding CustomCountdownMetric.Title}" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
+                            <TextBlock Grid.Column="1" Text="{Binding CustomCountdownMetric.PercentText}" FontSize="34" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+                            <TextBlock Grid.Column="2" Text="%" Margin="6,13,0,0" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
 
-                            <Border Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    Padding="10,5"
-                                    Background="#EEE7DB"
-                                    CornerRadius="999">
-                                <TextBlock Text="持续刷新" FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-                            </Border>
-                        </Grid>
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding CustomCountdownMetric.Caption}" Margin="0,10,0,0" FontSize="12.5" Foreground="{StaticResource MutedBrush}" />
 
-                        <TextBlock Grid.Row="2" Text="{Binding LifeMetric.Caption}" Margin="0,10,0,0" FontSize="13" Foreground="{StaticResource MutedBrush}" />
+                            <controls:ProgressTrack Grid.Row="2" Grid.ColumnSpan="3" Percentage="{Binding CustomCountdownMetric.Percentage}" Margin="0,14,0,10" />
 
-                        <controls:ProgressTrack Grid.Row="3" Percentage="{Binding LifeMetric.Percentage}" Margin="0,16,0,10" />
-
-                        <TextBlock Grid.Row="4" Text="{Binding LifeMetric.Detail}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
-                    </Grid>
-                </Border>
-
-                <TextBlock Grid.Row="2" Text="当前进度" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Margin="4,0,0,12" />
-
-                <Grid Grid.Row="3" Margin="0,0,0,14">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Border Grid.Row="0" Grid.Column="0" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="0,0,8,10">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="{Binding YearMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-
-                            <Grid Grid.Row="1" Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="{Binding YearMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
-                                <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-                            </Grid>
-
-                            <controls:ProgressTrack Grid.Row="2" Percentage="{Binding YearMetric.Percentage}" Margin="0,14,0,10" />
-
-                            <StackPanel Grid.Row="3">
-                                <TextBlock Text="{Binding YearMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
-                                <TextBlock Text="{Binding YearMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
-                            </StackPanel>
+                            <TextBlock Grid.Row="3" Grid.ColumnSpan="3" Text="{Binding CustomCountdownMetric.Detail}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
                         </Grid>
                     </Border>
 
-                    <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16" Margin="8,0,0,10">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Text="{Binding MonthMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-
-                            <Grid Grid.Row="1" Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="{Binding MonthMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
-                                <TextBlock Grid.Column="1" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-                            </Grid>
-
-                            <controls:ProgressTrack Grid.Row="2" Percentage="{Binding MonthMetric.Percentage}" Margin="0,14,0,10" />
-
-                            <StackPanel Grid.Row="3">
-                                <TextBlock Text="{Binding MonthMetric.Caption}" FontSize="12" Foreground="{StaticResource MutedBrush}" />
-                                <TextBlock Text="{Binding MonthMetric.Detail}" Margin="0,6,0,0" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Grid>
+                    <Border Background="#EEE7DB" CornerRadius="18" Padding="14,12">
+                        <TextBlock Text="{Binding FooterText}" FontSize="12.5" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
                     </Border>
-
-                    <Border Grid.Row="1" Grid.ColumnSpan="2" Background="{StaticResource CardBackgroundBrush}" CornerRadius="22" Padding="16">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Text="{Binding WeekMetric.Title}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-                                <TextBlock Grid.Column="1" Text="{Binding WeekMetric.PercentText}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
-                                <TextBlock Grid.Column="2" Text="%" Margin="6,11,0,0" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" />
-                            </Grid>
-
-                            <TextBlock Grid.Row="1" Text="{Binding WeekMetric.Caption}" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource MutedBrush}" />
-
-                            <controls:ProgressTrack Grid.Row="2" Percentage="{Binding WeekMetric.Percentage}" Margin="0,14,0,10" />
-
-                            <TextBlock Grid.Row="3" Text="{Binding WeekMetric.Detail}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <Border Grid.Row="4" Background="#EEE7DB" CornerRadius="18" Padding="14,12">
-                    <TextBlock Text="{Binding FooterText}" FontSize="12.5" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
-                </Border>
-            </Grid>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </Window>

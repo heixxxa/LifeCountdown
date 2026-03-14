@@ -10,6 +10,14 @@ public sealed class AppSettings
 
     public WindowAnchor WindowAnchor { get; set; } = WindowAnchor.BottomRight;
 
+    public bool CustomCountdownEnabled { get; set; }
+
+    public string CustomCountdownTitle { get; set; } = "自定义倒计时";
+
+    public DateTime CustomCountdownStartDate { get; set; } = DateTime.Today;
+
+    public DateTime CustomCountdownTargetDate { get; set; } = DateTime.Today.AddDays(30);
+
     public AppSettings Clone()
     {
         return new AppSettings
@@ -18,6 +26,10 @@ public sealed class AppSettings
             LifeExpectancyYears = LifeExpectancyYears,
             WeekStartMode = WeekStartMode,
             WindowAnchor = WindowAnchor,
+            CustomCountdownEnabled = CustomCountdownEnabled,
+            CustomCountdownTitle = CustomCountdownTitle,
+            CustomCountdownStartDate = CustomCountdownStartDate,
+            CustomCountdownTargetDate = CustomCountdownTargetDate,
         };
     }
 }

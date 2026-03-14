@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="设置"
-        Width="420"
-        Height="420"
+        Width="470"
+        Height="680"
         AllowsTransparency="True"
         Background="Transparent"
         WindowStyle="None"
@@ -18,58 +18,123 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,18" MouseLeftButtonDown="Header_MouseLeftButtonDown">
-                    <TextBlock Text="设置" FontSize="24" FontWeight="SemiBold" Foreground="#202024" />
-                    <TextBlock Text="用出生日期和预期寿命，计算本周 / 本月 / 本年 / 一生的进度。"
-                               Margin="0,8,0,0"
-                               FontSize="12.5"
-                               Foreground="#756F67"
-                               TextWrapping="Wrap" />
-                </StackPanel>
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <StackPanel Margin="0,0,0,18" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                            <TextBlock Text="设置" FontSize="24" FontWeight="SemiBold" Foreground="#202024" />
+                            <TextBlock Text="用出生日期和预期寿命，计算本天 / 本周 / 本月 / 本年 / 一生；还可以配置一个自定义倒计时。"
+                                       Margin="0,8,0,0"
+                                       FontSize="12.5"
+                                       Foreground="#756F67"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
 
-                <StackPanel Grid.Row="1" Margin="0,0,0,14">
-                    <TextBlock Text="出生日期" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
-                    <DatePicker x:Name="BirthDatePicker" Margin="0,8,0,0" Height="36" />
-                </StackPanel>
+                        <Border Background="#FCFBF7" CornerRadius="22" Padding="16" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="人生参数" FontSize="15" FontWeight="SemiBold" Foreground="#202024" />
 
-                <StackPanel Grid.Row="2" Margin="0,0,0,14">
-                    <TextBlock Text="预期寿命（年）" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
-                    <TextBox x:Name="LifeExpectancyTextBox" Margin="0,8,0,0" Height="36" VerticalContentAlignment="Center" />
-                </StackPanel>
+                                <TextBlock Text="出生日期" Margin="0,14,0,0" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                <DatePicker x:Name="BirthDatePicker" Margin="0,8,0,0" Height="36" />
 
-                <Grid Grid.Row="3" Margin="0,0,0,18">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                                <TextBlock Text="预期寿命（年）" Margin="0,14,0,0" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                <TextBox x:Name="LifeExpectancyTextBox" Margin="0,8,0,0" Height="36" VerticalContentAlignment="Center" />
+                            </StackPanel>
+                        </Border>
 
-                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                        <TextBlock Text="一周起点" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
-                        <ComboBox x:Name="WeekStartComboBox" Margin="0,8,0,0" Height="36" />
+                        <Border Background="#FCFBF7" CornerRadius="22" Padding="16" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="显示方式" FontSize="15" FontWeight="SemiBold" Foreground="#202024" />
+
+                                <Grid Margin="0,14,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                        <TextBlock Text="一周起点" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                        <ComboBox x:Name="WeekStartComboBox" Margin="0,8,0,0" Height="36" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                        <TextBlock Text="窗口位置" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                        <ComboBox x:Name="WindowAnchorComboBox" Margin="0,8,0,0" Height="36" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <Border Background="#EEE7DB" CornerRadius="16" Padding="12,10" Margin="0,14,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="其他托盘图标" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                        <TextBlock Text="主界面的“托盘图标”按钮可以展开 / 收起系统隐藏图标面板。若要设置某个应用图标长期显示或隐藏，请打开 Windows 的系统托盘设置。"
+                                                   Margin="0,6,0,0"
+                                                   FontSize="12.5"
+                                                   Foreground="#756F67"
+                                                   TextWrapping="Wrap" />
+                                        <Button Content="打开系统托盘设置"
+                                                Click="OpenSystemTraySettingsButton_Click"
+                                                Margin="0,10,0,0"
+                                                Padding="14,8"
+                                                HorizontalAlignment="Left"
+                                                Background="#202024"
+                                                Foreground="#F8F5F0"
+                                                BorderThickness="0"
+                                                FontWeight="SemiBold"
+                                                Cursor="Hand">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="999">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#FCFBF7" CornerRadius="22" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="自定义倒计时" FontSize="15" FontWeight="SemiBold" Foreground="#202024" />
+
+                                <CheckBox x:Name="EnableCustomCountdownCheckBox"
+                                          Content="启用自定义倒计时"
+                                          Margin="0,14,0,0"
+                                          FontSize="13"
+                                          FontWeight="SemiBold"
+                                          Foreground="#202024" />
+
+                                <StackPanel IsEnabled="{Binding IsChecked, ElementName=EnableCustomCountdownCheckBox}">
+                                    <TextBlock Text="标题" Margin="0,14,0,0" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                    <TextBox x:Name="CustomCountdownTitleTextBox" Margin="0,8,0,0" Height="36" VerticalContentAlignment="Center" />
+
+                                    <Grid Margin="0,14,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                            <TextBlock Text="开始日期" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                            <DatePicker x:Name="CustomCountdownStartDatePicker" Margin="0,8,0,0" Height="36" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                            <TextBlock Text="目标日期" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
+                                            <DatePicker x:Name="CustomCountdownTargetDatePicker" Margin="0,8,0,0" Height="36" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
+                </ScrollViewer>
 
-                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                        <TextBlock Text="窗口位置" FontSize="13" FontWeight="SemiBold" Foreground="#202024" />
-                        <ComboBox x:Name="WindowAnchorComboBox" Margin="0,8,0,0" Height="36" />
-                    </StackPanel>
-                </Grid>
-
-                <Border Grid.Row="4" Background="#EEE7DB" CornerRadius="20" Padding="14,12">
-                    <TextBlock Text="说明：Windows 11 上很难再像旧版 DeskBand 那样直接嵌入任务栏，所以这里采用原生托盘 + 无边框悬浮面板的方式，体验接近状态栏小组件。"
-                               FontSize="12.5"
-                               Foreground="#756F67"
-                               TextWrapping="Wrap" />
-                </Border>
-
-                <Grid Grid.Row="5" Margin="0,22,0,0">
+                <Grid Grid.Row="1" Margin="0,22,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />

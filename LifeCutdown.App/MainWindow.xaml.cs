@@ -10,6 +10,7 @@ namespace LifeCutdown.App;
 public partial class MainWindow : Window
 {
     private readonly SettingsService _settingsService;
+    private readonly SystemTrayController _systemTrayController;
     private readonly MainViewModel _viewModel;
     private readonly DispatcherTimer _refreshTimer;
     private readonly bool _showSettingsOnFirstLaunch;
@@ -20,6 +21,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         _settingsService = settingsService;
+        _systemTrayController = new SystemTrayController();
         _settings = settings.Clone();
         _showSettingsOnFirstLaunch = showSettingsOnFirstLaunch;
 
@@ -84,6 +86,21 @@ public partial class MainWindow : Window
     private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         OpenSettingsDialog();
+    }
+
+    private void TrayButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_systemTrayController.ToggleOverflowWindow())
+        {
+            return;
+        }
+
+        System.Windows.MessageBox.Show(
+            this,
+            "当前系统未能直接切换隐藏托盘图标面板。你可以在设置页里点击“打开系统托盘设置”来管理其他应用的托盘图标显示。",
+            "托盘图标",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 
     private void HideButton_Click(object sender, RoutedEventArgs e)

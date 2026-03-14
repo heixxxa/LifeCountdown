@@ -6,4 +6,6 @@ public sealed record DashboardSnapshot(
     MetricSnapshot Life,
     MetricSnapshot Year,
     MetricSnapshot Month,
-    MetricSnapshot Week);
+    MetricSnapshot Week,
+    MetricSnapshot Day,
+    MetricSnapshot CustomCountdown);

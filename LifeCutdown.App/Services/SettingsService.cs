@@ -74,6 +74,24 @@ public sealed class SettingsService
         normalized.BirthDate = normalized.BirthDate.Date;
         normalized.LifeExpectancyYears = Math.Clamp(normalized.LifeExpectancyYears, 1, 130);
 
+        if (string.IsNullOrWhiteSpace(normalized.CustomCountdownTitle))
+        {
+            normalized.CustomCountdownTitle = "自定义倒计时";
+        }
+
+        normalized.CustomCountdownStartDate = normalized.CustomCountdownStartDate == default
+            ? DateTime.Today
+            : normalized.CustomCountdownStartDate.Date;
+
+        normalized.CustomCountdownTargetDate = normalized.CustomCountdownTargetDate == default
+            ? normalized.CustomCountdownStartDate.AddDays(30)
+            : normalized.CustomCountdownTargetDate.Date;
+
+        if (normalized.CustomCountdownTargetDate <= normalized.CustomCountdownStartDate)
+        {
+            normalized.CustomCountdownTargetDate = normalized.CustomCountdownStartDate.AddDays(1);
+        }
+
         return normalized;
     }
 }

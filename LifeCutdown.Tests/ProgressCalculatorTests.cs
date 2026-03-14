@@ -6,6 +6,16 @@ namespace LifeCutdown.Tests;
 public class ProgressCalculatorTests
 {
     [Fact]
+    public void DayProgress_ReturnsMidpointAtNoon()
+    {
+        var settings = new AppSettings();
+
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 11, 12, 0, 0), settings);
+
+        Assert.InRange(snapshot.Day.Percentage, 50.0, 50.1);
+    }
+
+    [Fact]
     public void WeekProgress_UsesMondayAsConfigured()
     {
         var settings = new AppSettings
@@ -58,5 +68,36 @@ public class ProgressCalculatorTests
 
         Assert.Equal(100, snapshot.Life.Percentage);
         Assert.Contains("超出预设", snapshot.Life.Detail);
+    }
+
+    [Fact]
+    public void CustomCountdown_ReturnsMidpointForMidRangeDate()
+    {
+        var settings = new AppSettings
+        {
+            CustomCountdownEnabled = true,
+            CustomCountdownTitle = "项目截止",
+            CustomCountdownStartDate = new DateTime(2026, 3, 1),
+            CustomCountdownTargetDate = new DateTime(2026, 3, 11),
+        };
+
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 6, 0, 0, 0), settings);
+
+        Assert.Equal("项目截止", snapshot.CustomCountdown.Title);
+        Assert.InRange(snapshot.CustomCountdown.Percentage, 50.0, 50.1);
+    }
+
+    [Fact]
+    public void CustomCountdown_ShowsPlaceholderWhenDisabled()
+    {
+        var settings = new AppSettings
+        {
+            CustomCountdownEnabled = false,
+        };
+
+        var snapshot = ProgressCalculator.BuildDashboard(new DateTime(2026, 3, 6, 0, 0, 0), settings);
+
+        Assert.Equal(0, snapshot.CustomCountdown.Percentage);
+        Assert.Contains("未启用", snapshot.CustomCountdown.Caption);
     }
 }

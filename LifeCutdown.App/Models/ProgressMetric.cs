@@ -5,16 +5,21 @@ namespace LifeCutdown.App.Models;
 
 public sealed class ProgressMetric : ObservableObject
 {
+    private string _title;
     private double _percentage;
     private string _caption = string.Empty;
     private string _detail = string.Empty;
 
     public ProgressMetric(string title)
     {
-        Title = title;
+        _title = title;
     }
 
-    public string Title { get; }
+    public string Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
 
     public double Percentage
     {
