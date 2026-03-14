@@ -50,11 +50,17 @@ public partial class TaskbarMiniWindow : Window
         MetricPercentageTextBlock.Text = MetricTextFormatter.BuildTaskbarWindowPercentage(metric);
         RootBorder.ToolTip = MetricTextFormatter.BuildTaskbarDescription(metric);
 
-        var accentBrush = new SolidColorBrush(GetMetricColor(mode));
+        var accentColor = GetMetricColor(mode);
+        var accentBrush = new SolidColorBrush(accentColor);
         accentBrush.Freeze();
+        
+        var bgBrush = new SolidColorBrush(accentColor) { Opacity = 0.25 };
+        bgBrush.Freeze();
+
         MetricTitleTextBlock.Foreground = accentBrush;
         MetricPercentageTextBlock.Foreground = accentBrush;
         ProgressFillRectangle.Fill = accentBrush;
+        ProgressBackgroundRectangle.Fill = bgBrush;
 
         UpdateLayout();
         UpdateProgressBar();

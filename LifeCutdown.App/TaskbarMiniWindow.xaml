@@ -23,7 +23,7 @@
         <Grid SnapsToDevicePixels="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="4" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid>
@@ -53,14 +53,16 @@
 
             <Grid x:Name="ProgressTrackGrid"
                   Grid.Row="1"
-                  Margin="0,4,0,0"
-                  Height="2"
+                  Margin="0,5,0,0"
+                  Height="4"
                   SnapsToDevicePixels="True">
-                <Rectangle Fill="#2AFFFFFF" />
+                <Rectangle x:Name="ProgressBackgroundRectangle" RadiusX="2" RadiusY="2" />
                 <Rectangle x:Name="ProgressFillRectangle"
                            HorizontalAlignment="Left"
                            Width="0"
-                           Fill="#FF89A28E" />
+                           Fill="#FF89A28E" 
+                           RadiusX="2" 
+                           RadiusY="2" />
             </Grid>
         </Grid>
     </Border>
